@@ -1,3 +1,7 @@
 .cproject
 .project
 .settings/
+Debug/mysort
+Debug/objects.mk
+Debug/sources.mk
+Debug/src/*
