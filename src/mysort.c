@@ -92,7 +92,7 @@ int strCmpFuncRev(const void * a, const void * b){
 int main(int argc, char* argv[]) {
 	//Parse input options.
 	int reverse_sort = 0;
-	int print_number_lines = 0;
+	int print_number_lines = -1;
 	int read_from_file = 0;
 	char* fileName;
 	char c;
@@ -101,6 +101,7 @@ int main(int argc, char* argv[]) {
 
 	//Read in command line options, and set corresponding flags.
 	while ((c = getopt (argc, argv, "rn::")) != -1){
+		int i = 0;
 		switch (c){
 	    	case 'r':
 	    		//Reverse sorting order.
@@ -108,6 +109,15 @@ int main(int argc, char* argv[]) {
 	    		break;
 	    	case 'n':
 	    		//Convert option value to number. (Returns 0 if invalid conversion)
+	    		while(optarg[i] != '\0'){
+	    			if(!isdigit(optarg[i])){
+	    				fprintf(stderr, "Option n error, not a number.\n");
+	    				return 1;
+	    			}else{
+	    				i++;
+	    			}
+	    		}
+
 	    		print_number_lines = atoi(optarg);
 	    		//If invalid argument, return negative.
 	    		if(print_number_lines < 0){
@@ -190,7 +200,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	//Output sorted file lines to stdout.
-	if(print_number_lines){
+	if(print_number_lines >= 0){
 		print_number_lines = ((print_number_lines) > (fileLength) ? (fileLength) : (print_number_lines));
 		for(i=0; i < print_number_lines; i++){
 			printf("%s",staticStringList[i]);
