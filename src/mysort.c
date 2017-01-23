@@ -68,8 +68,9 @@ void linkedListAdd(LinkedList *list, char *value){
 		list->tail = newNode;
 	}else{
 		list->tail->next = newNode;
-		list->tail = newNode;
+		list->tail = list->tail->next;
 	}
+	list->length += 1;
 }
 
 
@@ -120,6 +121,8 @@ int main(int argc, char* argv[]) {
 	int read_from_file = 0;
 	char* fileName;
 	char c;
+	LinkedList *stringList = (LinkedList*)malloc(sizeof(LinkedList));
+	linkedListInit(stringList);
 
 
 	//Read in command line options, and set corresponding flags.
@@ -159,16 +162,42 @@ int main(int argc, char* argv[]) {
 		read_from_file = 1;
 	}
 
-//	if(read_from_file){
-//		FILE* fp = fopen(fileName, "r");
-//		int i = 0;
-//		printf("Opened file second time!\n");
-//		while(fgets(stringList[i] , 1024 , fp) != NULL){
-//			i += 1;
-//		}
-//		fclose(fp);
-//	}
-//
+	//Read Data From File Into Linked List.
+	if(read_from_file){
+		FILE* fp = fopen(fileName, "r");
+		int i = 0;
+		char *mString = (char*)malloc(1024 * sizeof(char));
+		printf("Opened file to read!\n");
+		while(fgets(mString , 1024, fp) != NULL){
+			//Add string to list
+			linkedListAdd(stringList, mString);
+			//Allocate new memory.
+			mString = (char*)malloc(1024 * sizeof(char));
+			i += 1;
+		}
+		//Unallocate last, unused string memory block.
+		free(mString);
+		fclose(fp);
+		printf("Finished reading file! Length of List is %d, # Lines Read is %d.\n", stringList->length, i);
+	}
+
+	//Iterate through list items, and store them in an array for the qsort function.
+	char *staticStringList[stringList->length];
+	ListNode *currNode = stringList->head;
+	int i = 0;
+	int fileLength = stringList->length;
+	while(currNode){
+		staticStringList[i] = currNode->value;
+		currNode = currNode->next;
+		i++;
+	}
+	//Destroy the linked list structure.
+	linkedListDestroy(stringList);
+
+	for(i=0; i<10; i++){
+		printf("Static string list: %s", staticStringList[i]);
+	}
+
 //	//Set up string array pointer, and allocate 1024 characters for each string.
 //	char* stringTable[fileLength];
 //	for (int i=0; i<=fileLength; i++)
