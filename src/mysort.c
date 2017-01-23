@@ -14,6 +14,68 @@
 #include <unistd.h>
 #include <ctype.h>
 
+
+/*
+ * Linked List Code.
+ * */
+typedef struct ListNode_ {
+    char *value;
+    struct ListNode_ *next;
+}ListNode;
+
+typedef struct LinkedList_ {
+	ListNode *head;
+	ListNode *tail;
+	int length;
+}LinkedList;
+
+/**
+ * Initialize list.
+ * */
+void linkedListInit(LinkedList *list){
+	list->head = NULL;
+	list->tail = list->head;
+	list->length = 0;
+}
+
+/**
+ * Frees each linked list node, and also frees the LinkedList structure passed to the function.
+ * */
+void linkedListDestroy(LinkedList *list){
+	ListNode *currNode = list->head;
+	while(currNode){
+		ListNode *delNode = currNode;
+		currNode = currNode->next;
+		free(delNode);
+	}
+	list->head = NULL;
+	list->tail = NULL;
+	list->length = 0;
+	free(list);
+}
+
+/**
+ * Append new list node to the end of the list.
+ * */
+void linkedListAdd(LinkedList *list, char *value){
+
+	ListNode *newNode = (ListNode*)malloc(sizeof(ListNode));
+	newNode->value = value;
+	newNode->next = NULL;
+
+	if(list->length == 0){
+		list->head = newNode;
+		list->tail = newNode;
+	}else{
+		list->tail->next = newNode;
+		list->tail = newNode;
+	}
+}
+
+
+/*
+ * Sorting functions.
+ * */
 int strCmpFunc(const void * a, const void * b){
 	return strcmp((char*)a, (char*)b);
 }
@@ -59,6 +121,7 @@ int main(int argc, char* argv[]) {
 	char* fileName;
 	char c;
 
+
 	//Read in command line options, and set corresponding flags.
 	while ((c = getopt (argc, argv, "rn::")) != -1){
 		switch (c){
@@ -93,34 +156,29 @@ int main(int argc, char* argv[]) {
 	if(optind < argc){
 		//Get a reference to the file.
 		fileName = argv[optind];
+		read_from_file = 1;
 	}
 
-	//Read file length. (If file doesn't exist, print error)
-	printf("Before file length.\n");
-	int fileLength = 0;
-	fileLength = getFileLength(fileName);
-	printf("After file length, length is %d.\n", fileLength);
-	if(fileLength == -1){
-		fprintf(stderr,"File not found err.\n");
-		return 1;
-	}
-	//Set up string array, and read string data.
-	//char stringTable[fileLength][1024];
-	printf("Before string allocation.\n");
-	char* stringTable[fileLength];
-	for (int i=0; i<=fileLength; i++)
-		stringTable[i] = (char*)malloc(1024 * sizeof(char));
-	printf("After string allocation.\n");
-
-
-	printf("Before second file read.\n");
-	readFile(fileLength, fileName, stringTable);
-	printf("After second file read.\n");
+//	if(read_from_file){
+//		FILE* fp = fopen(fileName, "r");
+//		int i = 0;
+//		printf("Opened file second time!\n");
+//		while(fgets(stringList[i] , 1024 , fp) != NULL){
+//			i += 1;
+//		}
+//		fclose(fp);
+//	}
+//
+//	//Set up string array pointer, and allocate 1024 characters for each string.
+//	char* stringTable[fileLength];
+//	for (int i=0; i<=fileLength; i++)
+//		stringTable[i] = (char*)malloc(1024 * sizeof(char));
+//	//Read strings from file.
+//	readFile(fileLength, fileName, stringTable);
 
 	//Sort string data.
-	for(int i = 0; i < 10; i++){
-		printf("Line: %s", stringTable[i]);
-	}
+
+
 	//Output
 
 	//qsort();
