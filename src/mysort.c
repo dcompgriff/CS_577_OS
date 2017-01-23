@@ -22,12 +22,35 @@ int strCmpFuncRev(const void * a, const void * b){
    return -1*strcmp((char*)a, (char*)b);
 }
 
+int getFileLength(char fileName[]){
+	int numberOfLines = 0;
+	char buffer[1024];
+	FILE* fp = fopen(fileName, "r");
+	if(fp == NULL){
+		return -1;
+	}else{
+		while(fgets(buffer , 1024 , fp) != NULL){
+			numberOfLines += 1;
+		}
+	}
+	fclose(fp);
+	return numberOfLines;
+}
+
+
+void readFile(int length, char fileName[], char* stringList[]){
+	FILE* fp = fopen(fileName, "r");
+	int i = 0;
+	printf("Opened file second time!\n");
+	while(fgets(stringList[i] , 1024 , fp) != NULL){
+		i += 1;
+	}
+	fclose(fp);
+}
+
 
 int main(int argc, char* argv[]) {
-
-
-	puts("My Sort Program!");
-
+	printf("Beginning.\n");
 
 	//Parse input options.
 	int reverse_sort = 0;
@@ -72,15 +95,32 @@ int main(int argc, char* argv[]) {
 		fileName = argv[optind];
 	}
 
-	//If non-negative number input, print error.
-	//If unknown option, print error.
-
 	//Read file length. (If file doesn't exist, print error)
-
+	printf("Before file length.\n");
+	int fileLength = 0;
+	fileLength = getFileLength(fileName);
+	printf("After file length, length is %d.\n", fileLength);
+	if(fileLength == -1){
+		fprintf(stderr,"File not found err.\n");
+		return 1;
+	}
 	//Set up string array, and read string data.
+	//char stringTable[fileLength][1024];
+	printf("Before string allocation.\n");
+	char* stringTable[fileLength];
+	for (int i=0; i<=fileLength; i++)
+		stringTable[i] = (char*)malloc(1024 * sizeof(char));
+	printf("After string allocation.\n");
+
+
+	printf("Before second file read.\n");
+	readFile(fileLength, fileName, stringTable);
+	printf("After second file read.\n");
 
 	//Sort string data.
-
+	for(int i = 0; i < 10; i++){
+		printf("Line: %s", stringTable[i]);
+	}
 	//Output
 
 	//qsort();
