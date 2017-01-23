@@ -90,8 +90,6 @@ int strCmpFuncRev(const void * a, const void * b){
 }
 
 int main(int argc, char* argv[]) {
-	printf("Beginning.\n");
-
 	//Parse input options.
 	int reverse_sort = 0;
 	int print_number_lines = 0;
@@ -185,7 +183,6 @@ int main(int argc, char* argv[]) {
 	linkedListDestroy(stringList);
 
 	//Sort string data using qsort.
-	printf("Before sorting.\n");
 	if(reverse_sort){
 		qsort(staticStringList, fileLength, sizeof(char*), strCmpFunc);
 	}else{
@@ -193,7 +190,6 @@ int main(int argc, char* argv[]) {
 	}
 
 	//Output sorted file lines to stdout.
-	printf("Before final output.\n");
 	if(print_number_lines){
 		print_number_lines = ((print_number_lines) > (fileLength) ? (fileLength) : (print_number_lines));
 		for(i=0; i < print_number_lines; i++){
