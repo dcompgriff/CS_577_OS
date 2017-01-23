@@ -101,7 +101,6 @@ int main(int argc, char* argv[]) {
 	LinkedList *stringList = (LinkedList*)malloc(sizeof(LinkedList));
 	linkedListInit(stringList);
 
-
 	//Read in command line options, and set corresponding flags.
 	while ((c = getopt (argc, argv, "rn::")) != -1){
 		switch (c){
@@ -142,9 +141,12 @@ int main(int argc, char* argv[]) {
 	//Read Data From File Into Linked List.
 	if(read_from_file){
 		FILE* fp = fopen(fileName, "r");
+		if(fp == NULL){
+			fprintf(stderr,"File not found '%s'.\n", fileName);
+			return 1;
+		}
 		int i = 0;
 		char *mString = (char*)malloc(1024 * sizeof(char));
-		printf("Opened file to read!\n");
 		while(fgets(mString , 1024, fp) != NULL){
 			//Add string to list
 			linkedListAdd(stringList, mString);
@@ -155,7 +157,18 @@ int main(int argc, char* argv[]) {
 		//Unallocate last, unused string memory block.
 		free(mString);
 		fclose(fp);
-		printf("Finished reading file! Length of List is %d, # Lines Read is %d.\n", stringList->length, i);
+	}else{
+		int i = 0;
+		char *mString = (char*)malloc(1024 * sizeof(char));
+		while(fgets(mString , 1024, stdin) != NULL){
+			//Add string to list
+			linkedListAdd(stringList, mString);
+			//Allocate new memory.
+			mString = (char*)malloc(1024 * sizeof(char));
+			i += 1;
+		}
+		//Unallocate last, unused string memory block.
+		free(mString);
 	}
 
 	//Iterate through list items, and store them in an array for the qsort function.
