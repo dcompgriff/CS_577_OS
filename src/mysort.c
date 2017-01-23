@@ -10,6 +10,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 #include <unistd.h>
 #include <ctype.h>
@@ -75,42 +76,18 @@ void linkedListAdd(LinkedList *list, char *value){
 
 
 /*
- * Sorting functions.
+ * Sorting comparison functions.
+ * Note: A pointer to the character array pointer is given for each argument. Thus,
+ * the data must be cast to the double pointer, then de-referenced to the string
+ * pointer.
  * */
 int strCmpFunc(const void * a, const void * b){
-	return strcmp((char*)a, (char*)b);
+	return -1*strcmp(*(char**)a, *(char**)b);
 }
 
 int strCmpFuncRev(const void * a, const void * b){
-   return -1*strcmp((char*)a, (char*)b);
+	return strcmp(*(char**)a, *(char**)b);
 }
-
-int getFileLength(char fileName[]){
-	int numberOfLines = 0;
-	char buffer[1024];
-	FILE* fp = fopen(fileName, "r");
-	if(fp == NULL){
-		return -1;
-	}else{
-		while(fgets(buffer , 1024 , fp) != NULL){
-			numberOfLines += 1;
-		}
-	}
-	fclose(fp);
-	return numberOfLines;
-}
-
-
-void readFile(int length, char fileName[], char* stringList[]){
-	FILE* fp = fopen(fileName, "r");
-	int i = 0;
-	printf("Opened file second time!\n");
-	while(fgets(stringList[i] , 1024 , fp) != NULL){
-		i += 1;
-	}
-	fclose(fp);
-}
-
 
 int main(int argc, char* argv[]) {
 	printf("Beginning.\n");
@@ -194,25 +171,31 @@ int main(int argc, char* argv[]) {
 	//Destroy the linked list structure.
 	linkedListDestroy(stringList);
 
-	for(i=0; i<10; i++){
-		printf("Static string list: %s", staticStringList[i]);
+	//Sort string data using qsort.
+	printf("Before sorting.\n");
+	if(reverse_sort){
+		qsort(staticStringList, fileLength, sizeof(char*), strCmpFunc);
+	}else{
+		qsort(staticStringList, fileLength, sizeof(char*), strCmpFuncRev);
 	}
 
-//	//Set up string array pointer, and allocate 1024 characters for each string.
-//	char* stringTable[fileLength];
-//	for (int i=0; i<=fileLength; i++)
-//		stringTable[i] = (char*)malloc(1024 * sizeof(char));
-//	//Read strings from file.
-//	readFile(fileLength, fileName, stringTable);
+	//Output sorted file lines to stdout.
+	printf("Before final output.\n");
+	if(print_number_lines){
+		print_number_lines = ((print_number_lines) > (fileLength) ? (fileLength) : (print_number_lines));
+		for(i=0; i < print_number_lines; i++){
+			printf("%s",staticStringList[i]);
+		}
+	}else{
+		for(i=0; i < fileLength; i++){
+			printf("%s",staticStringList[i]);
+		}
+	}
 
-	//Sort string data.
-
-
-	//Output
-
-	//qsort();
-
-
+	//Free final string memory.
+	for(i=0; i<fileLength; i++){
+		free(staticStringList[i]);
+	}
 
 	return EXIT_SUCCESS;
 }
