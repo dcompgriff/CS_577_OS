@@ -167,11 +167,11 @@ int main(int argc, char* argv[]) {
 		fclose(fp);
 	}else{
 	        //Determine if there is a file or pipe redirect input to stdin. If not, return error.
-                if(isatty(fileno(stdin))){
-		  fprintf(stderr, "No file input provided.");
-		  return 1;
+                //if(isatty(fileno(stdin))){
+		  //fprintf(stderr, "No file input provided.");
+		  //return 1;
 
-		}
+		  //		}
 		int i = 0;
 		char *mString = (char*)malloc(1025 * sizeof(char));
 		while(fgets(mString , 1025, stdin) != NULL){
@@ -206,6 +206,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	//Output sorted file lines to stdout.
+	//printf("\n");
 	if(print_number_lines >= 0){
 		print_number_lines = ((print_number_lines) > (fileLength) ? (fileLength) : (print_number_lines));
 		for(i=0; i < print_number_lines; i++){

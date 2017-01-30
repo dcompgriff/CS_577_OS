@@ -5,3 +5,4 @@ Debug/mysort
 Debug/objects.mk
 Debug/sources.mk
 Debug/src/*
+*.o
