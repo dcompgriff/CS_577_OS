@@ -186,7 +186,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	//Iterate through list items, and store them in an array for the qsort function.
-	char *staticStringList[stringList->length];
+	char **staticStringList = (char**)malloc(stringList->length*sizeof(char*));//[stringList->length];
 	ListNode *currNode = stringList->head;
 	int i = 0;
 	int fileLength = stringList->length;
@@ -222,6 +222,7 @@ int main(int argc, char* argv[]) {
 	for(i=0; i<fileLength; i++){
 		free(staticStringList[i]);
 	}
+	free(staticStringList);
 
 	return EXIT_SUCCESS;
 }
